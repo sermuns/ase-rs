@@ -1,0 +1,19 @@
+[package]
+name = "ase2"
+version = "0.1.3"
+edition.workspace = true
+description = "Rust library to parse Aseprite *.aseprite files"
+keywords = ["ase", "Aseprite", "Pixel"]
+license = "MIT"
+repository = "https://github.com/sermuns/ase-rs"
+
+[dependencies]
+byteorder = "1"
+bitflags = "1.0"
+num_enum = "0.1.1"
+flate2 = "1.0"
+
+
+[[bin]]
+name = "print_ase"
+path = "bin/read.rs"

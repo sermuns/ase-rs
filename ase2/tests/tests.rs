@@ -1,9 +1,9 @@
-use ase::*;
+use ase2::Aseprite;
 use std::io::{Cursor, Read, Seek, SeekFrom};
 
 fn test_read(fname: &str) -> std::io::Result<()> {
     let mut file = std::fs::File::open(fname)?;
-    let _ = Aseprite::from_read(&mut file)?;
+    let _ = ase2::Aseprite::from_read(&mut file)?;
     Ok(())
 }
 
