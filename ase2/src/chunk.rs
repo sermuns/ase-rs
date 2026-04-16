@@ -98,9 +98,10 @@ impl Chunk {
             0x2020 => ChunkData::UserDataChunk(UserDataChunk::from_read(read)?),
             0x2022 => ChunkData::SliceChunk(SliceChunk::from_read(read)?),
             _ => {
-                return Err(io::Error::other(
-                    format!("Invalid Chunk Type 0x{:X}", chunk_type),
-                ));
+                return Err(io::Error::other(format!(
+                    "Invalid Chunk Type 0x{:X}",
+                    chunk_type
+                )));
             }
         };
 
