@@ -6,14 +6,14 @@ use std::{
 };
 
 #[rstest]
-fn test_read(#[files("examples/*.aseprite")] path: PathBuf) -> std::io::Result<()> {
+fn test_read(#[files("examples/*.ase*")] path: PathBuf) -> std::io::Result<()> {
     let mut file = std::fs::File::open(path)?;
     let _ = ase2::Aseprite::from_read(&mut file)?;
     Ok(())
 }
 
 #[rstest]
-fn test_rw(#[files("examples/*.aseprite")] path: PathBuf) -> std::io::Result<()> {
+fn test_rw(#[files("examples/*.ase*")] path: PathBuf) -> std::io::Result<()> {
     let mut file = std::fs::File::open(path)?;
     let mut file_buf = vec![];
     file.seek(SeekFrom::Start(0))?;
