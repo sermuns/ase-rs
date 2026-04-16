@@ -1,14 +1,20 @@
 use ase2::Aseprite;
-use std::io::{Cursor, Read, Seek, SeekFrom};
+use rstest::rstest;
+use std::{
+    io::{Cursor, Read, Seek, SeekFrom},
+    path::PathBuf,
+};
 
-fn test_read(fname: &str) -> std::io::Result<()> {
-    let mut file = std::fs::File::open(fname)?;
+#[rstest]
+fn test_read(#[files("examples/*.aseprite")] path: PathBuf) -> std::io::Result<()> {
+    let mut file = std::fs::File::open(path)?;
     let _ = ase2::Aseprite::from_read(&mut file)?;
     Ok(())
 }
 
-fn test_rw(fname: &str) -> std::io::Result<()> {
-    let mut file = std::fs::File::open(fname)?;
+#[rstest]
+fn test_rw(#[files("examples/*.aseprite")] path: PathBuf) -> std::io::Result<()> {
+    let mut file = std::fs::File::open(path)?;
     let mut file_buf = vec![];
     file.seek(SeekFrom::Start(0))?;
     file.read_to_end(&mut file_buf)?;
@@ -21,23 +27,5 @@ fn test_rw(fname: &str) -> std::io::Result<()> {
     let my_buf = wtr.into_inner();
     assert_eq!(my_buf, file_buf);
 
-    Ok(())
-}
-
-#[test]
-fn read() -> std::io::Result<()> {
-    test_read("sample_aseprite_files/simple.aseprite")?;
-    test_read("sample_aseprite_files/layered.aseprite")?;
-    test_read("sample_aseprite_files/animated.aseprite")?;
-    test_read("sample_aseprite_files/sliced.aseprite")?;
-    Ok(())
-}
-
-#[test]
-fn rw() -> std::io::Result<()> {
-    test_rw("sample_aseprite_files/simple.aseprite")?;
-    test_rw("sample_aseprite_files/layered.aseprite")?;
-    test_rw("sample_aseprite_files/animated.aseprite")?;
-    test_rw("sample_aseprite_files/sliced.aseprite")?;
     Ok(())
 }

@@ -13,7 +13,5 @@ bitflags = "1.0"
 num_enum = "0.1.1"
 flate2 = "1.0"
 
-
-[[bin]]
-name = "print_ase"
-path = "bin/read.rs"
+[dev-dependencies]
+rstest = "0.26"
