@@ -4,18 +4,13 @@ use bitflags::bitflags;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use num_enum::CustomTryInto;
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq, CustomTryInto)]
+#[derive(Default, Debug, Copy, Clone, Eq, PartialEq, CustomTryInto)]
 #[repr(u16)]
 pub enum ColorDepth {
     Indexed = 8,
     Grayscale = 16,
+    #[default]
     RGBA = 32,
-}
-
-impl Default for ColorDepth {
-    fn default() -> Self {
-        ColorDepth::RGBA
-    }
 }
 
 bitflags! {
@@ -86,7 +81,7 @@ impl Header {
         let color_depth = read
             .read_u16::<LittleEndian>()?
             .try_into_ColorDepth()
-            .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+            .map_err(io::Error::other)?;
         let flags = Flags::from_bits_truncate(read.read_u32::<LittleEndian>()?);
         let speed = read.read_u16::<LittleEndian>()?;
         read.seek(SeekFrom::Current(4 + 4))?;
@@ -112,12 +107,7 @@ impl Header {
         })
     }
 
-    pub fn write<W>(
-        &self,
-        wtr: &mut W,
-        frame_bytes: u32,
-        frame_len: u16,
-    ) -> io::Result<()>
+    pub fn write<W>(&self, wtr: &mut W, frame_bytes: u32, frame_len: u16) -> io::Result<()>
     where
         W: Write + Seek,
     {

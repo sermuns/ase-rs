@@ -1,8 +1,6 @@
-use std::io::{self, Cursor, Read, Seek, SeekFrom, Write};
-
+use crate::{chunk::Chunk, header::Header};
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
-
-use crate::{Chunk, Header};
+use std::io::{self, Cursor, Read, Seek, SeekFrom, Write};
 
 #[derive(Debug, Default)]
 pub struct Frame {
@@ -91,7 +89,7 @@ impl Frame {
             wtr.write_u32::<LittleEndian>(self.chunks.len() as u32)?;
         }
 
-        wtr.write(&chunks_wtr.into_inner())?;
+        wtr.write_all(&chunks_wtr.into_inner())?;
         Ok(())
     }
 }

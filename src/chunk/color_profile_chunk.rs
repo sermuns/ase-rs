@@ -1,10 +1,8 @@
-use std::io::{self, Read, Seek, SeekFrom, Write};
-
+use crate::helpers::read_bytes;
 use bitflags::bitflags;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use num_enum::CustomTryInto;
-
-use crate::helpers::read_bytes;
+use std::io::{self, Read, Seek, SeekFrom, Write};
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, CustomTryInto)]
 #[repr(u16)]

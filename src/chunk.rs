@@ -1,32 +1,28 @@
+use crate::{
+    chunk::{
+        cel_chunk::CelChunk, cel_extra_chunk::CelExtraChunk,
+        color_profile_chunk::ColorProfileChunk, frame_tags_chunk::FrameTagsChunk,
+        layer_chunk::LayerChunk, mask_chunk::MaskChunk, old_palette_chunk4::*,
+        old_palette_chunk11::OldPaletteChunk11, palette_chunk::PaletteChunk, path_chunk::PathChunk,
+        slice_chunk::SliceChunk, user_data_chunk::UserDataChunk,
+    },
+    header::Header,
+};
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use std::io::{self, Cursor, Read, Seek, Write};
 
-use crate::Header;
-
 pub mod cel_chunk;
-pub use self::cel_chunk::*;
 pub mod cel_extra_chunk;
-pub use self::cel_extra_chunk::*;
 pub mod color_profile_chunk;
-pub use self::color_profile_chunk::*;
 pub mod frame_tags_chunk;
-pub use self::frame_tags_chunk::*;
 pub mod layer_chunk;
-pub use self::layer_chunk::*;
 pub mod mask_chunk;
-pub use self::mask_chunk::*;
-pub mod old_palette_chunk4;
-pub use self::old_palette_chunk4::*;
 pub mod old_palette_chunk11;
-pub use self::old_palette_chunk11::*;
+pub mod old_palette_chunk4;
 pub mod palette_chunk;
-pub use self::palette_chunk::*;
 pub mod path_chunk;
-pub use self::path_chunk::*;
 pub mod slice_chunk;
-pub use self::slice_chunk::*;
 pub mod user_data_chunk;
-pub use self::user_data_chunk::*;
 
 #[derive(Debug)]
 pub enum ChunkData {
@@ -49,20 +45,19 @@ impl ChunkData {
     where
         W: Write + Seek,
     {
-        use self::ChunkData::*;
         match self {
-            OldPaletteChunk4(inner) => inner.write(wtr),
-            OldPaletteChunk11(inner) => inner.write(wtr),
-            LayerChunk(inner) => inner.write(wtr),
-            CelChunk(inner) => inner.write(wtr),
-            CelExtraChunk(inner) => inner.write(wtr),
-            ColorProfileChunk(inner) => inner.write(wtr),
-            MaskChunk(inner) => inner.write(wtr),
-            PathChunk(inner) => inner.write(wtr),
-            FrameTagsChunk(inner) => inner.write(wtr),
-            PaletteChunk(inner) => inner.write(wtr),
-            UserDataChunk(inner) => inner.write(wtr),
-            SliceChunk(inner) => inner.write(wtr),
+            ChunkData::OldPaletteChunk4(inner) => inner.write(wtr),
+            ChunkData::OldPaletteChunk11(inner) => inner.write(wtr),
+            ChunkData::LayerChunk(inner) => inner.write(wtr),
+            ChunkData::CelChunk(inner) => inner.write(wtr),
+            ChunkData::CelExtraChunk(inner) => inner.write(wtr),
+            ChunkData::ColorProfileChunk(inner) => inner.write(wtr),
+            ChunkData::MaskChunk(inner) => inner.write(wtr),
+            ChunkData::PathChunk(inner) => inner.write(wtr),
+            ChunkData::FrameTagsChunk(inner) => inner.write(wtr),
+            ChunkData::PaletteChunk(inner) => inner.write(wtr),
+            ChunkData::UserDataChunk(inner) => inner.write(wtr),
+            ChunkData::SliceChunk(inner) => inner.write(wtr),
         }
     }
 }
@@ -90,30 +85,15 @@ impl Chunk {
         let chunk_data_size = chunk_size - 4 - 2;
 
         let chunk_data = match chunk_type {
-            0x0004 => {
-                ChunkData::OldPaletteChunk4(OldPaletteChunk4::from_read(read)?)
-            }
-            0x0011 => ChunkData::OldPaletteChunk11(
-                OldPaletteChunk11::from_read(read)?,
-            ),
+            0x0004 => ChunkData::OldPaletteChunk4(OldPaletteChunk4::from_read(read)?),
+            0x0011 => ChunkData::OldPaletteChunk11(OldPaletteChunk11::from_read(read)?),
             0x2004 => ChunkData::LayerChunk(LayerChunk::from_read(read)?),
-            0x2005 => ChunkData::CelChunk(CelChunk::from_read(
-                read,
-                chunk_data_size,
-                header,
-            )?),
+            0x2005 => ChunkData::CelChunk(CelChunk::from_read(read, chunk_data_size, header)?),
             0x2006 => ChunkData::CelExtraChunk(CelExtraChunk::from_read(read)?),
-            0x2007 => ChunkData::ColorProfileChunk(
-                ColorProfileChunk::from_read(read)?,
-            ),
+            0x2007 => ChunkData::ColorProfileChunk(ColorProfileChunk::from_read(read)?),
             0x2016 => ChunkData::MaskChunk(MaskChunk::from_read(read)?),
-            0x2017 => ChunkData::PathChunk(PathChunk::from_read(
-                read,
-                chunk_data_size,
-            )?),
-            0x2018 => {
-                ChunkData::FrameTagsChunk(FrameTagsChunk::from_read(read)?)
-            }
+            0x2017 => ChunkData::PathChunk(PathChunk::from_read(read, chunk_data_size)?),
+            0x2018 => ChunkData::FrameTagsChunk(FrameTagsChunk::from_read(read)?),
             0x2019 => ChunkData::PaletteChunk(PaletteChunk::from_read(read)?),
             0x2020 => ChunkData::UserDataChunk(UserDataChunk::from_read(read)?),
             0x2022 => ChunkData::SliceChunk(SliceChunk::from_read(read)?),
