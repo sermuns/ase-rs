@@ -106,7 +106,7 @@ impl CelChunk {
     where
         R: Read + Seek,
     {
-        let chunk_start = read.seek(SeekFrom::Current(0))?;
+        let chunk_start = read.stream_position()?;
 
         let layer_index = read.read_u16::<LittleEndian>()?;
         let x_position = read.read_i16::<LittleEndian>()?;
@@ -119,7 +119,7 @@ impl CelChunk {
                 let width = read.read_u16::<LittleEndian>()?;
                 let height = read.read_u16::<LittleEndian>()?;
                 let pixels_size =
-                    chunk_start + chunk_data_size as u64 - read.seek(SeekFrom::Current(0))?;
+                    chunk_start + chunk_data_size as u64 - read.stream_position()?;
 
                 let pixels = CelChunk::read_pixels(read, &header.color_depth, pixels_size)?;
                 Cel::RawCel {
@@ -136,7 +136,7 @@ impl CelChunk {
                 let height = read.read_u16::<LittleEndian>()?;
 
                 let data_size =
-                    chunk_start + chunk_data_size as u64 - read.seek(SeekFrom::Current(0))?;
+                    chunk_start + chunk_data_size as u64 - read.stream_position()?;
                 let zlib_compressed_data = read_bytes(read, data_size as usize)?;
                 Cel::CompressedImage {
                     width,
@@ -145,8 +145,7 @@ impl CelChunk {
                 }
             }
             _ => {
-                return Err(io::Error::new(
-                    io::ErrorKind::Other,
+                return Err(io::Error::other(
                     format!("Invalid Cel Type {}", cel_type),
                 ));
             }
@@ -196,7 +195,7 @@ impl CelChunk {
             } => {
                 wtr.write_u16::<LittleEndian>(*width)?;
                 wtr.write_u16::<LittleEndian>(*height)?;
-                wtr.write(&zlib_compressed_data)?;
+                wtr.write(zlib_compressed_data)?;
             }
         }
 

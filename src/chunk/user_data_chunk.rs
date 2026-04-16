@@ -59,7 +59,7 @@ impl UserDataChunk {
                     ));
                 }
                 Some(text) => {
-                    write_string(wtr, &text)?;
+                    write_string(wtr, text)?;
                 }
             }
         }

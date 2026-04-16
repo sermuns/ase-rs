@@ -44,7 +44,7 @@ impl FrameTagsChunk {
             let loop_animation_direction = read
                 .read_u8()?
                 .try_into_LoopAnimationDirection()
-                .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+                .map_err(|e| io::Error::other(e))?;
             read.seek(SeekFrom::Current(8))?;
             let tag_color = RGB256 {
                 r: read.read_u8()?,

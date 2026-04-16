@@ -105,7 +105,7 @@ impl PaletteChunk {
             wtr.write_u8(pal.color.b)?;
             wtr.write_u8(pal.color.a)?;
             if let Some(name) = &pal.color_name {
-                write_string(wtr, &name)?
+                write_string(wtr, name)?
             }
         }
         Ok(())

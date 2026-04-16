@@ -46,9 +46,8 @@ impl Pixels {
         R: Read,
     {
         const BYTES_PER_PIXEL: usize = 4;
-        if pixels_size % BYTES_PER_PIXEL != 0 {
-            return Err(io::Error::new(
-                io::ErrorKind::Other,
+        if !pixels_size.is_multiple_of(BYTES_PER_PIXEL) {
+            return Err(io::Error::other(
                 format!(
                     "Pixels size is not multiple of 4 (RGBA): {}",
                     pixels_size
@@ -78,9 +77,8 @@ impl Pixels {
         R: Read,
     {
         const BYTES_PER_PIXEL: usize = 2;
-        if pixels_size % BYTES_PER_PIXEL != 0 {
-            return Err(io::Error::new(
-                io::ErrorKind::Other,
+        if !pixels_size.is_multiple_of(BYTES_PER_PIXEL) {
+            return Err(io::Error::other(
                 format!(
                     "Pixels size is not multiple of 2 (Grayscale): {}",
                     pixels_size

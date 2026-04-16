@@ -82,13 +82,13 @@ impl LayerChunk {
         let layer_type = read
             .read_u16::<LittleEndian>()?
             .try_into_LayerType()
-            .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+            .map_err(|e| io::Error::other(e))?;
         let layer_child_level = read.read_u16::<LittleEndian>()?;
         read.seek(SeekFrom::Current(2 + 2))?;
         let blend_mode = read
             .read_u16::<LittleEndian>()?
             .try_into_BlendMode()
-            .map_err(|e| io::Error::new(io::ErrorKind::Other, e))?;
+            .map_err(|e| io::Error::other(e))?;
         let opacity = read.read_u8()?;
         read.seek(SeekFrom::Current(3))?;
         let layer_name = read_string(read)?;
