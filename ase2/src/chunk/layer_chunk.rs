@@ -2,7 +2,7 @@ use std::io::{self, Read, Seek, SeekFrom, Write};
 
 use bitflags::bitflags;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
-use num_enum::CustomTryInto;
+use num_enum::TryFromPrimitive;
 
 use crate::helpers::{read_string, write_string};
 
@@ -19,14 +19,14 @@ bitflags! {
     }
 }
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq, CustomTryInto)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, TryFromPrimitive)]
 #[repr(u16)]
 pub enum LayerType {
     Normal = 0,
     Group = 1,
 }
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq, CustomTryInto)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, TryFromPrimitive)]
 #[repr(u16)]
 pub enum BlendMode {
     Normal = 0,
@@ -82,13 +82,13 @@ impl LayerChunk {
         let flags = Flags::from_bits_truncate(read.read_u16::<LittleEndian>()?);
         let layer_type = read
             .read_u16::<LittleEndian>()?
-            .try_into_LayerType()
+            .try_into()
             .map_err(io::Error::other)?;
         let layer_child_level = read.read_u16::<LittleEndian>()?;
         read.seek(SeekFrom::Current(2 + 2))?;
         let blend_mode = read
             .read_u16::<LittleEndian>()?
-            .try_into_BlendMode()
+            .try_into()
             .map_err(io::Error::other)?;
         let opacity = read.read_u8()?;
         read.seek(SeekFrom::Current(3))?;

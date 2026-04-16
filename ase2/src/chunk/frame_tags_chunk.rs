@@ -1,10 +1,10 @@
 use crate::color::RGB256;
 use crate::helpers::{read_string, write_string};
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
-use num_enum::CustomTryInto;
+use num_enum::TryFromPrimitive;
 use std::io::{self, Read, Seek, SeekFrom, Write};
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq, CustomTryInto)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, TryFromPrimitive)]
 #[repr(u8)]
 pub enum LoopAnimationDirection {
     Forward = 0,
@@ -39,10 +39,7 @@ impl FrameTagsChunk {
         for _ in 0..number_of_tags {
             let from_tag = read.read_u16::<LittleEndian>()?;
             let to_tag = read.read_u16::<LittleEndian>()?;
-            let loop_animation_direction = read
-                .read_u8()?
-                .try_into_LoopAnimationDirection()
-                .map_err(io::Error::other)?;
+            let loop_animation_direction = read.read_u8()?.try_into().map_err(io::Error::other)?;
             read.seek(SeekFrom::Current(8))?;
             let tag_color = RGB256 {
                 r: read.read_u8()?,

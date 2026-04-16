@@ -1,9 +1,9 @@
 use bitflags::bitflags;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
-use num_enum::CustomTryInto;
+use num_enum::TryFromPrimitive;
 use std::io::{self, Read, Seek, SeekFrom, Write};
 
-#[derive(Default, Debug, Copy, Clone, Eq, PartialEq, CustomTryInto)]
+#[derive(Default, Debug, Copy, Clone, Eq, PartialEq, TryFromPrimitive)]
 #[repr(u16)]
 pub enum ColorDepth {
     Indexed = 8,
@@ -80,7 +80,7 @@ impl Header {
         let height_in_pixels = read.read_u16::<LittleEndian>()?;
         let color_depth = read
             .read_u16::<LittleEndian>()?
-            .try_into_ColorDepth()
+            .try_into()
             .map_err(io::Error::other)?;
         let flags = Flags::from_bits_truncate(read.read_u32::<LittleEndian>()?);
         let speed = read.read_u16::<LittleEndian>()?;

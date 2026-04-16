@@ -1,10 +1,10 @@
 use crate::helpers::read_bytes;
 use bitflags::bitflags;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
-use num_enum::CustomTryInto;
+use num_enum::TryFromPrimitive;
 use std::io::{self, Read, Seek, SeekFrom, Write};
 
-#[derive(Debug, Copy, Clone, Eq, PartialEq, CustomTryInto)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, TryFromPrimitive)]
 #[repr(u16)]
 pub enum ProfileType {
     None = 0,
@@ -34,7 +34,7 @@ impl ColorProfileChunk {
     {
         let profile_type = read
             .read_u16::<LittleEndian>()?
-            .try_into_ProfileType()
+            .try_into()
             .map_err(io::Error::other)?;
         let flags = Flags::from_bits_truncate(read.read_u16::<LittleEndian>()?);
         let fixed_gamma = read.read_f32::<LittleEndian>()?;
