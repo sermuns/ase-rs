@@ -9,7 +9,7 @@ repository = "https://github.com/sermuns/ase-rs"
 
 [dependencies]
 byteorder = "1"
-bitflags = "1.0"
+bitflags = "2"
 num_enum = "0.1.1"
 flate2 = "1.0"
 

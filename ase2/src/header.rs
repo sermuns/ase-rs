@@ -1,8 +1,7 @@
-use std::io::{self, Read, Seek, SeekFrom, Write};
-
 use bitflags::bitflags;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use num_enum::CustomTryInto;
+use std::io::{self, Read, Seek, SeekFrom, Write};
 
 #[derive(Default, Debug, Copy, Clone, Eq, PartialEq, CustomTryInto)]
 #[repr(u16)]
@@ -14,6 +13,7 @@ pub enum ColorDepth {
 }
 
 bitflags! {
+    #[derive(Debug)]
     pub struct Flags: u32 {
         const HasOpacity = 1;
     }
@@ -117,7 +117,7 @@ impl Header {
         wtr.write_u16::<LittleEndian>(self.width_in_pixels)?;
         wtr.write_u16::<LittleEndian>(self.height_in_pixels)?;
         wtr.write_u16::<LittleEndian>(self.color_depth as u16)?;
-        wtr.write_u32::<LittleEndian>(self.flags.bits)?;
+        wtr.write_u32::<LittleEndian>(self.flags.bits())?;
         wtr.write_u16::<LittleEndian>(self.speed)?;
         wtr.seek(SeekFrom::Current(4 + 4))?;
         wtr.write_u8(self.transparent_palette_entry)?;

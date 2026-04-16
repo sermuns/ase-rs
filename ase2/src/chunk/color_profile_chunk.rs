@@ -13,6 +13,7 @@ pub enum ProfileType {
 }
 
 bitflags! {
+    #[derive(Debug)]
     pub struct Flags: u16 {
         const SpecialFixedGamma = 1;
     }
@@ -59,7 +60,7 @@ impl ColorProfileChunk {
         W: Write + Seek,
     {
         wtr.write_u16::<LittleEndian>(self.profile_type as u16)?;
-        wtr.write_u16::<LittleEndian>(self.flags.bits)?;
+        wtr.write_u16::<LittleEndian>(self.flags.bits())?;
         wtr.write_f32::<LittleEndian>(self.fixed_gamma)?;
         wtr.seek(SeekFrom::Current(8))?;
         wtr.write_all(&self.icc_profile)?;

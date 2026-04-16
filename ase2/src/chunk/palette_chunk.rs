@@ -23,6 +23,7 @@ use crate::color::RGBA256;
 use crate::helpers::{read_string, write_string};
 
 bitflags! {
+    #[derive(Debug)]
     pub struct Flags: u16 {
         const HasName = 1;
     }
@@ -54,8 +55,7 @@ impl PaletteChunk {
         read.seek(SeekFrom::Current(8))?;
         let mut palette_entries = Vec::with_capacity(new_palette_size as usize);
         for _ in 0..new_palette_size {
-            let flags =
-                Flags::from_bits_truncate(read.read_u16::<LittleEndian>()?);
+            let flags = Flags::from_bits_truncate(read.read_u16::<LittleEndian>()?);
             let color = RGBA256 {
                 r: read.read_u8()?,
                 g: read.read_u8()?,
@@ -99,7 +99,7 @@ impl PaletteChunk {
                     "Flag HasName is 1 but col_name is None".to_owned(),
                 ));
             }
-            wtr.write_u16::<LittleEndian>(pal.flags.bits)?;
+            wtr.write_u16::<LittleEndian>(pal.flags.bits())?;
             wtr.write_u8(pal.color.r)?;
             wtr.write_u8(pal.color.g)?;
             wtr.write_u8(pal.color.b)?;

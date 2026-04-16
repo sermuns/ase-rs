@@ -7,6 +7,7 @@ use num_enum::CustomTryInto;
 use crate::helpers::{read_string, write_string};
 
 bitflags! {
+    #[derive(Debug)]
     pub struct Flags: u16 {
         const Visible = 1;
         const Editable = 2;
@@ -107,7 +108,7 @@ impl LayerChunk {
     where
         W: Write + Seek,
     {
-        wtr.write_u16::<LittleEndian>(self.flags.bits)?;
+        wtr.write_u16::<LittleEndian>(self.flags.bits())?;
         wtr.write_u16::<LittleEndian>(self.layer_type as u16)?;
         wtr.write_u16::<LittleEndian>(self.layer_child_level)?;
         wtr.seek(SeekFrom::Current(2 + 2))?;

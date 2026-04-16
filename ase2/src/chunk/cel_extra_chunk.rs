@@ -1,9 +1,9 @@
-use std::io::{self, Read, Seek, SeekFrom, Write};
-
 use bitflags::bitflags;
 use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
+use std::io::{self, Read, Seek, SeekFrom, Write};
 
 bitflags! {
+    #[derive(Debug)]
     pub struct Flags: u32 {
         const PreciseBounds = 1;
     }
@@ -43,7 +43,7 @@ impl CelExtraChunk {
     where
         W: Write + Seek,
     {
-        wtr.write_u32::<LittleEndian>(self.flags.bits)?;
+        wtr.write_u32::<LittleEndian>(self.flags.bits())?;
         wtr.write_f32::<LittleEndian>(self.precise_x_position)?;
         wtr.write_f32::<LittleEndian>(self.precise_y_position)?;
         wtr.write_f32::<LittleEndian>(self.width)?;

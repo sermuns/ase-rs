@@ -6,6 +6,7 @@ use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
 use crate::helpers::{read_string, write_string};
 
 bitflags! {
+    #[derive(Debug)]
     pub struct Flags: u32 {
         const IsNinePatchesSlice = 1;
         const HasPivotInformation = 2;
@@ -61,8 +62,7 @@ impl SliceChunk {
             let y_origin = read.read_i32::<LittleEndian>()?;
             let width = read.read_u32::<LittleEndian>()?;
             let height = read.read_u32::<LittleEndian>()?;
-            let nine_patches_info = if flags.contains(Flags::IsNinePatchesSlice)
-            {
+            let nine_patches_info = if flags.contains(Flags::IsNinePatchesSlice) {
                 Some(NinePatchesInfo {
                     x_position: read.read_i32::<LittleEndian>()?,
                     y_position: read.read_i32::<LittleEndian>()?,
@@ -105,7 +105,7 @@ impl SliceChunk {
         W: Write + Seek,
     {
         wtr.write_u32::<LittleEndian>(self.number_of_slice_keys)?;
-        wtr.write_u32::<LittleEndian>(self.flags.bits)?;
+        wtr.write_u32::<LittleEndian>(self.flags.bits())?;
         wtr.seek(SeekFrom::Current(4))?;
         write_string(wtr, &self.name)?;
         for key in &self.keys {

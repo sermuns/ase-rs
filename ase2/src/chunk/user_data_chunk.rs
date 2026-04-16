@@ -7,6 +7,7 @@ use crate::color::RGBA256;
 use crate::helpers::{read_string, write_string};
 
 bitflags! {
+    #[derive(Debug)]
     pub struct Flags: u32 {
         const HasText = 1;
         const HasColor = 2;
@@ -49,7 +50,7 @@ impl UserDataChunk {
     where
         W: Write,
     {
-        wtr.write_u32::<LittleEndian>(self.flags.bits)?;
+        wtr.write_u32::<LittleEndian>(self.flags.bits())?;
         if self.flags.contains(Flags::HasText) {
             match &self.text {
                 None => {
