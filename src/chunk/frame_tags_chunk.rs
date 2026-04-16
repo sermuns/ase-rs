@@ -1,10 +1,8 @@
-use std::io::{self, Read, Seek, SeekFrom, Write};
-
-use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
-use num_enum::CustomTryInto;
-
 use crate::color::RGB256;
 use crate::helpers::{read_string, write_string};
+use byteorder::{LittleEndian, ReadBytesExt, WriteBytesExt};
+use num_enum::CustomTryInto;
+use std::io::{self, Read, Seek, SeekFrom, Write};
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq, CustomTryInto)]
 #[repr(u8)]
@@ -44,7 +42,7 @@ impl FrameTagsChunk {
             let loop_animation_direction = read
                 .read_u8()?
                 .try_into_LoopAnimationDirection()
-                .map_err(|e| io::Error::other(e))?;
+                .map_err(io::Error::other)?;
             read.seek(SeekFrom::Current(8))?;
             let tag_color = RGB256 {
                 r: read.read_u8()?,

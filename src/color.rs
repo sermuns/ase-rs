@@ -38,21 +38,16 @@ pub enum Pixels {
 }
 
 impl Pixels {
-    pub fn rgba_from_read<R>(
-        read: &mut R,
-        pixels_size: usize,
-    ) -> io::Result<Self>
+    pub fn rgba_from_read<R>(read: &mut R, pixels_size: usize) -> io::Result<Self>
     where
         R: Read,
     {
         const BYTES_PER_PIXEL: usize = 4;
         if !pixels_size.is_multiple_of(BYTES_PER_PIXEL) {
-            return Err(io::Error::other(
-                format!(
-                    "Pixels size is not multiple of 4 (RGBA): {}",
-                    pixels_size
-                ),
-            ));
+            return Err(io::Error::other(format!(
+                "Pixels size is not multiple of 4 (RGBA): {}",
+                pixels_size
+            )));
         }
 
         let pixel_count = pixels_size / BYTES_PER_PIXEL;
@@ -69,21 +64,16 @@ impl Pixels {
         Ok(Pixels::RGBA(pixels))
     }
 
-    pub fn grayscale_from_read<R>(
-        read: &mut R,
-        pixels_size: usize,
-    ) -> io::Result<Self>
+    pub fn grayscale_from_read<R>(read: &mut R, pixels_size: usize) -> io::Result<Self>
     where
         R: Read,
     {
         const BYTES_PER_PIXEL: usize = 2;
         if !pixels_size.is_multiple_of(BYTES_PER_PIXEL) {
-            return Err(io::Error::other(
-                format!(
-                    "Pixels size is not multiple of 2 (Grayscale): {}",
-                    pixels_size
-                ),
-            ));
+            return Err(io::Error::other(format!(
+                "Pixels size is not multiple of 2 (Grayscale): {}",
+                pixels_size
+            )));
         }
 
         let pixel_count = pixels_size / BYTES_PER_PIXEL;
@@ -99,10 +89,7 @@ impl Pixels {
         Ok(Pixels::Grayscale(pixels))
     }
 
-    pub fn indexed_from_read<R>(
-        read: &mut R,
-        pixels_size: usize,
-    ) -> io::Result<Self>
+    pub fn indexed_from_read<R>(read: &mut R, pixels_size: usize) -> io::Result<Self>
     where
         R: Read,
     {
@@ -137,7 +124,7 @@ impl Pixels {
                 }
             }
             Indexed(indices) => {
-                wtr.write(indices)?;
+                wtr.write_all(indices)?;
             }
         }
         Ok(())

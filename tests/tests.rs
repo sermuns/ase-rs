@@ -1,6 +1,5 @@
 use ase::*;
-use std::fs;
-use std::io::{Cursor, Read, Seek, SeekFrom, Write};
+use std::io::{Cursor, Read, Seek, SeekFrom};
 
 fn test_read(fname: &str) -> std::io::Result<()> {
     let mut file = std::fs::File::open(fname)?;

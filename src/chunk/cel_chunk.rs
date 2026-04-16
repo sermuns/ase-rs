@@ -195,7 +195,7 @@ impl CelChunk {
             } => {
                 wtr.write_u16::<LittleEndian>(*width)?;
                 wtr.write_u16::<LittleEndian>(*height)?;
-                wtr.write(zlib_compressed_data)?;
+                wtr.write_all(zlib_compressed_data)?;
             }
         }
 

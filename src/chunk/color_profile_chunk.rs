@@ -34,7 +34,7 @@ impl ColorProfileChunk {
         let profile_type = read
             .read_u16::<LittleEndian>()?
             .try_into_ProfileType()
-            .map_err(|e| io::Error::other(e))?;
+            .map_err(io::Error::other)?;
         let flags = Flags::from_bits_truncate(read.read_u16::<LittleEndian>()?);
         let fixed_gamma = read.read_f32::<LittleEndian>()?;
         read.seek(SeekFrom::Current(8))?;
@@ -62,7 +62,7 @@ impl ColorProfileChunk {
         wtr.write_u16::<LittleEndian>(self.flags.bits)?;
         wtr.write_f32::<LittleEndian>(self.fixed_gamma)?;
         wtr.seek(SeekFrom::Current(8))?;
-        wtr.write(&self.icc_profile)?;
+        wtr.write_all(&self.icc_profile)?;
         Ok(())
     }
 }
