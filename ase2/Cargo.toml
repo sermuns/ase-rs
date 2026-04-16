@@ -11,7 +11,7 @@ repository = "https://github.com/sermuns/ase-rs"
 byteorder = "1"
 bitflags = "2"
 num_enum = "0.7"
-flate2 = "1.0"
+flate2 = "1"
 
 [dev-dependencies]
 rstest = "0.26"
